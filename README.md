@@ -5,9 +5,10 @@ After receiving a few requests we decided to open source our AWS lambda code fol
 **Prerequisites:**
  - Before using this lambda you will need a policy written in Vault specific to your app and environment, the policy should be named `<app>-<environment>` for example `kickstarter-dev`.
  - You will need to create a Vault token with restricted access to Vault and store it in S3.
- - You will need AWS credentials
- - We use serverless to deploy our lambdas, install with `npm install serverless -g`
+ - You will need AWS credentials.
  - You will need to add a `local.yml` file at the root of the directory with all the variables specific to your environment.
+ - You will need to add your own SSL certificate `ca.pem`at the root as well.
+  - We use serverless to deploy our lambdas, install with `npm install serverless -g` and deploy with `serverless deploy`
 
 ## How does this work ?
 
