@@ -8,7 +8,7 @@ provider:
   name: aws
   region: us-east-1
   stage: dev
-  deploymentBucket: ${self:custom.s3.serverless_bucket}
+  deploymentBucket: ${self:custom.${opt:stage, self:provider.stage}.s3.serverless_bucket}
   runtime: nodejs4.3
   profile: serverless
   iamRoleStatements:
@@ -22,22 +22,22 @@ provider:
     - Effect: Allow
       Action:
       - s3:GetObject
-      Resource: ${self:custom.s3.token}
+      Resource: ${self:custom.${opt:stage, self:provider.stage}.s3.token}
     - Effect: Allow
       Action:
       - s3:PutObject
       - s3:DeleteObject
-      Resource: ${self:custom.s3.approle}
+      Resource: ${self:custom.${opt:stage, self:provider.stage}.s3.approle}
 functions:
   serverless-approle-manager:
     handler: index.handler
     vpc:
       securityGroupIds:
-        - ${self:custom.vpc.securitygroupId}
+        - ${self:custom.${opt:stage, self:provider.stage}.vpc.securitygroupId}
       subnetIds:
-        - ${self:custom.vpc.subnetsIdOne}
-        - ${self:custom.vpc.subnetsIdTwo}
+        - ${self:custom.${opt:stage, self:provider.stage}.vpc.subnetsIdOne}
+        - ${self:custom.${opt:stage, self:provider.stage}.vpc.subnetsIdTwo}
     environment:
-      VAULT_HOST: ${self:custom.vault_host}
-      CONFIG_BUCKET: ${self:custom.s3.config_bucket}
-      TOKEN_KEY: ${self:custom.s3.token_key}
+      VAULT_HOST: ${self:custom.${opt:stage, self:provider.stage}.vault_host}
+      CONFIG_BUCKET: ${self:custom.${opt:stage, self:provider.stage}.s3.config_bucket}
+      TOKEN_KEY: ${self:custom.${opt:stage, self:provider.stage}.s3.token_key}
