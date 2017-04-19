@@ -2,6 +2,8 @@
 # This is an example on how we use envconsul to set the secrets in our container environment after retrieving a Vault token
 set -e
 
+VAULT_SERVER="your Vault's server address"
+
 if [[ -z "${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI}" ]]; then
   iamRole=`curl http://169.254.169.254/latest/meta-data/iam/security-credentials/`
 else
