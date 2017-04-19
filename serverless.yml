@@ -22,12 +22,12 @@ provider:
     - Effect: Allow
       Action:
       - s3:GetObject
-      Resource: ${self:custom.${opt:stage, self:provider.stage}.s3.token}
+      Resource: ${self:custom.${opt:stage, self:provider.stage}.s3.token_resource_arn}
     - Effect: Allow
       Action:
       - s3:PutObject
       - s3:DeleteObject
-      Resource: ${self:custom.${opt:stage, self:provider.stage}.s3.approle}
+      Resource: ${self:custom.${opt:stage, self:provider.stage}.s3.resource_arn}
 functions:
   serverless-approle-manager:
     handler: index.handler
