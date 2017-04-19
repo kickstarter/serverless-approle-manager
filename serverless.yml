@@ -1,0 +1,43 @@
+service: approle-manager
+package:
+  include:
+    - node_modules/**
+    - lib/**
+custom: ${file(./local.yml)}
+provider:
+  name: aws
+  region: us-east-1
+  stage: dev
+  deploymentBucket: ${self:custom.s3.serverless_bucket}
+  runtime: nodejs4.3
+  profile: serverless
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - ec2:CreateNetworkInterface
+      - ec2:DescribeNetworkInterfaces
+      - ec2:DetachNetworkInterface
+      - ec2:DeleteNetworkInterface
+      Resource: "*"
+    - Effect: Allow
+      Action:
+      - s3:GetObject
+      Resource: ${self:custom.s3.token}
+    - Effect: Allow
+      Action:
+      - s3:PutObject
+      - s3:DeleteObject
+      Resource: ${self:custom.s3.approle}
+functions:
+  serverless-approle-manager:
+    handler: index.handler
+    vpc:
+      securityGroupIds:
+        - ${self:custom.vpc.securitygroupId}
+      subnetIds:
+        - ${self:custom.vpc.subnetsIdOne}
+        - ${self:custom.vpc.subnetsIdTwo}
+    environment:
+      VAULT_HOST: ${self:custom.vault_host}
+      CONFIG_BUCKET: ${self:custom.s3.config_bucket}
+      TOKEN_KEY: ${self:custom.s3.token_key}
