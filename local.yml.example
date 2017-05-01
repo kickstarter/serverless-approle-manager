@@ -1,0 +1,12 @@
+dev:
+  vault_host: "<your Vault's server address>"
+  s3:
+    serverless_bucket: "< s3 bucket name >"
+    config_bucket: "< s3 bucket name >"
+    token_resource_arn: "arn:aws:s3:::ksr-config/vault/lambda"
+    resource_arn: "arn:aws:s3:::< s3 config bucket name >/vault/appRole/*"
+    token_key: "<S3 key for your Vault token"
+  vpc:
+    securitygroupId: "sg-1234"
+    subnetsIdOne: "subnet-1234"
+    subnetsIdTwo: "subnet-1234"

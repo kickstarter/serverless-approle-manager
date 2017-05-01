@@ -1,0 +1,43 @@
+service: approle-manager
+package:
+  include:
+    - node_modules/**
+    - lib/**
+custom: ${file(./local.yml)}
+provider:
+  name: aws
+  region: us-east-1
+  stage: dev
+  deploymentBucket: ${self:custom.${opt:stage, self:provider.stage}.s3.serverless_bucket}
+  runtime: nodejs4.3
+  profile: serverless
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - ec2:CreateNetworkInterface
+      - ec2:DescribeNetworkInterfaces
+      - ec2:DetachNetworkInterface
+      - ec2:DeleteNetworkInterface
+      Resource: "*"
+    - Effect: Allow
+      Action:
+      - s3:GetObject
+      Resource: ${self:custom.${opt:stage, self:provider.stage}.s3.token_resource_arn}
+    - Effect: Allow
+      Action:
+      - s3:PutObject
+      - s3:DeleteObject
+      Resource: ${self:custom.${opt:stage, self:provider.stage}.s3.resource_arn}
+functions:
+  serverless-approle-manager:
+    handler: index.handler
+    vpc:
+      securityGroupIds:
+        - ${self:custom.${opt:stage, self:provider.stage}.vpc.securitygroupId}
+      subnetIds:
+        - ${self:custom.${opt:stage, self:provider.stage}.vpc.subnetsIdOne}
+        - ${self:custom.${opt:stage, self:provider.stage}.vpc.subnetsIdTwo}
+    environment:
+      VAULT_HOST: ${self:custom.${opt:stage, self:provider.stage}.vault_host}
+      CONFIG_BUCKET: ${self:custom.${opt:stage, self:provider.stage}.s3.config_bucket}
+      TOKEN_KEY: ${self:custom.${opt:stage, self:provider.stage}.s3.token_key}
